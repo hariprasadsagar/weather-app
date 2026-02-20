@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { fetchHistoricalWeather } from "@/lib/weatherService";
-import { Calendar, AlertTriangle, Loader2 } from "lucide-react";
+import { Calendar, AlertTriangle, Loader2, Thermometer, Wind, Droplets } from "lucide-react";
 
 interface Props {
   city: string;
@@ -59,7 +59,7 @@ const HistoricalWeather = ({ city }: Props) => {
         <div className="glass rounded-2xl p-4 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div>
-            <p className="text-foreground text-sm font-medium">Plan Limitation</p>
+            <p className="text-foreground text-sm font-medium">Error</p>
             <p className="text-muted-foreground text-xs mt-1">{error}</p>
           </div>
         </div>
@@ -68,11 +68,25 @@ const HistoricalWeather = ({ city }: Props) => {
       {data?.historical && (
         <div className="glass rounded-3xl p-5 space-y-3">
           {Object.entries(data.historical).map(([dateKey, dayData]: [string, any]) => (
-            <div key={dateKey}>
-              <p className="text-foreground font-medium text-sm">{dateKey}</p>
-              <p className="text-muted-foreground text-xs">
-                Avg: {dayData.avgtemp}°C | Min: {dayData.mintemp}°C | Max: {dayData.maxtemp}°C
-              </p>
+            <div key={dateKey} className="glass-subtle rounded-xl p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-foreground font-medium text-sm">{dateKey}</p>
+                <span className="text-xs text-muted-foreground">{dayData.description}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Thermometer className="w-3 h-3 text-primary" />
+                  <span>Avg: {dayData.avgtemp}°C</span>
+                </div>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <span>↓{dayData.mintemp}°</span>
+                  <span>↑{dayData.maxtemp}°</span>
+                </div>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <Droplets className="w-3 h-3 text-primary" />
+                  <span>{dayData.precip}mm</span>
+                </div>
+              </div>
             </div>
           ))}
         </div>
